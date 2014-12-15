@@ -11,14 +11,13 @@ a) scribe_rows scribes i-th digit along the i-th row as an i+2 long bar
 python3 scribe_rows.py data.pkl
 # Run with no arguments to see full usage
 ```
-    This will output data.pkl
 
 b) scribe_numbers scribes i-th digit as a Hindu-Arabic numeral.   
 ```sh
 python3 scribe_hindu.py data.pkl
 # Run with no arguments to see full usage
 ```
-    This will output data.pkl
+This will output data.pkl
 
 2) Run the actual Recurrent Neural Net with Connectionist Temporal Classification cost function as:
 ```sh
