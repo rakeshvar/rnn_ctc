@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+
+
 def slab_print(slab):
     """
     Prints a 'slab' of printed 'text' using ascii.
@@ -6,11 +9,10 @@ def slab_print(slab):
     for ir, r in enumerate(slab):
         print('{:2d}¦'.format(ir), end='')
         for val in r:
-            if val == 0:     print(' ', end=''),
-            elif val < .25:  print('░', end=''),
-            elif val < .5:   print('▒', end=''),
-            elif val < .75:  print('▓', end=''),
-            elif val < 1.0:  print('█', end=''),
+            if val   < .05:  print(' ', end=''),
+            elif val < .35:  print('░', end=''),
+            elif val < .65:  print('▒', end=''),
+            elif val < .95:  print('▓', end=''),
             else:            print('█', end=''),
         print('¦')
 

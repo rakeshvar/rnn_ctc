@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+'''
+Recurrent Neural Net with Connectionist Temporal Classification implemented
+in Theano.
+
+'''
 import theano
 import theano.tensor as tt
 import numpy as np
@@ -96,6 +101,16 @@ class RnnCTC():
 
 
 # ##########################################################################
+def show_all(shown_seq, shown_img, seen_probabilities):
+    maxes = np.argmax(seen_probabilities, 1)
+    print('Shown : ', end='')
+    pred_print(shown_seq)
+    print('Seen  : ', end='')
+    pred_print(maxes)
+    print('Images (Shown & Seen) : ')
+    slab_print(shown_img)
+    slab_print(seen_probabilities.T)
+
 
 if __name__ == "__main__":
     import pickle
@@ -121,6 +136,7 @@ if __name__ == "__main__":
     nDims = len(data['x'][0])
     nSamples = len(data['x'])
     nTrainSamples = nSamples * .75
+    nEpochs = 100
 
     ntwk = RnnCTC(nDims, nHidden, nClasses)
     train_fn = ntwk.get_train_fn()
@@ -137,7 +153,7 @@ if __name__ == "__main__":
         data_x.append(np.asarray(x, dtype=theano.config.floatX))
 
     # Actual training
-    for epoch in range(100):
+    for epoch in range(nEpochs):
         print('Epoch : ', epoch)
         for samp in range(nSamples):
             x = data_x[samp]
@@ -146,21 +162,12 @@ if __name__ == "__main__":
             if samp < nTrainSamples:
                 pred, cst = train_fn(x.T, y)
                 if epoch % 10 == 0 and samp < 3:
-                    # Print some training info
-                    maxes = np.argmax(pred, 1)
                     print('## TRAIN cost: ', np.round(cst, 3))
-                    pred_print(y)
-                    pred_print(maxes)
-                    slab_print(x)
-                    slab_print(pred.T)
+                    show_all(y, x, pred)
 
-            elif epoch % 10 == 0 and samp - nTrainSamples < 3:
+            elif (epoch % 10 == 0 or epoch == nEpochs - 1) and \
+                    samp - nTrainSamples < 3:
                 # Print some test images
                 pred = np.asarray(test_fn(x.T))[0]
-                maxes = np.argmax(pred, 1)
-
                 print('## TEST')
-                pred_print(y)
-                pred_print(maxes)
-                slab_print(x)
-                slab_print(pred.T)
+                show_all(y, x, pred)
