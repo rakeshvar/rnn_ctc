@@ -21,7 +21,7 @@ This will output data.pkl
 
 2) Run the actual Recurrent Neural Net with Connectionist Temporal Classification cost function as:
 ```sh
-python3 rnn_ctc data.pkl [nHidden]
+python3 rnn_ctc.py data.pkl [nHidden]
 ```
 
 ## Sample Output
