@@ -9,10 +9,10 @@ def slab_print(slab):
     for ir, r in enumerate(slab):
         print('{:2d}¦'.format(ir), end='')
         for val in r:
-            if val   < .05:  print(' ', end=''),
-            elif val < .35:  print('░', end=''),
-            elif val < .65:  print('▒', end=''),
-            elif val < .95:  print('▓', end=''),
+            if   val < .05:  print(' ', end=''),
+            elif val < .30:  print('░', end=''),
+            elif val < .55:  print('▒', end=''),
+            elif val < .85:  print('▓', end=''),
             else:            print('█', end=''),
         print('¦')
 
