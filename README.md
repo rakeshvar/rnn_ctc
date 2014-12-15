@@ -12,7 +12,7 @@ python3 scribe_rows.py data.pkl
 # Run with no arguments to see full usage
 ```
 
-b) scribe_numbers scribes i-th digit as a Hindu-Arabic numeral.   
+b) scribe_hindu scribes i-th digit as a Hindu-Arabic numeral.   
 ```sh
 python3 scribe_hindu.py data.pkl
 # Run with no arguments to see full usage
