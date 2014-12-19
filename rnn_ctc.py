@@ -68,11 +68,8 @@ def path_probabs(predict, y_sym):
 
 
 def ctc_cost(predict, y_sym):
-    forward_probabs = path_probabs(predict, y_sym)
-    backward_probabs = path_probabs(predict[::-1], y_sym[::-1])[::-1, ::-1]
-    probabs = forward_probabs * backward_probabs / predict[:, y_sym]
-    total_probabs = tt.sum(probabs)
-    return -tt.log(total_probabs)
+    label_probab = path_probabs(predict, y_sym)[-1,-1]
+    return -tt.log(label_probab)
 
 
 class RnnCTC():
