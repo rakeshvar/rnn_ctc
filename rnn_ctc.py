@@ -47,14 +47,24 @@ def build_model(input_sz, hidden_sz, output_sz):
     return x_sym, predict, params
 
 
-def recurrence_relation(size):
-    eye2 = tt.eye(size + 2)
-    return tt.eye(size) + eye2[2:, 1:-1] + eye2[2:, :-2] * (tt.arange(size) % 2)
+def recurrence_relation(y_sym, blank):
+
+    def sec_diag_i(yt, ytp1, ytp2):
+        return tt.neq(yt, ytp2) * tt.eq(ytp1, blank)
+    
+    y_extend = tt.concatenate((y_sym, [blank, blank]))
+    sec_diag, _ = theano.scan(sec_diag_i,
+                    sequences={'input':y_extend, 'taps':[0, 1, 2]})
+
+    y_sz = y_sym.shape[0]
+    return tt.eye(y_sz) + \
+           tt.eye(y_sz, k=1) + \
+           tt.eye(y_sz, k=2) * sec_diag.dimshuffle((0, 'x'))
 
 
-def path_probabs(predict, y_sym):
+def path_probabs(predict, y_sym, blank):
     pred_y = predict[:, y_sym]
-    rr = recurrence_relation(y_sym.shape[0])
+    rr = recurrence_relation(y_sym, blank)
 
     def step(p_curr, p_prev):
         return p_curr * tt.dot(p_prev, rr)
@@ -67,8 +77,8 @@ def path_probabs(predict, y_sym):
     return probabilities
 
 
-def ctc_cost(predict, y_sym):
-    label_probab = path_probabs(predict, y_sym)[-1,-1]
+def ctc_cost(predict, y_sym, blank):
+    label_probab = path_probabs(predict, y_sym, blank)[-1,-1]
     return -tt.log(label_probab)
 
 
@@ -77,7 +87,7 @@ class RnnCTC():
         self.Y = tt.ivector('Y')
         self.X, self.predict, self.params = \
             build_model(n_dims, n_hidden, n_classes + 1)
-        self.cost = ctc_cost(self.predict, self.Y)
+        self.cost = ctc_cost(self.predict, self.Y, n_classes)
 
         # Differentiable
         self.updates = []
