@@ -172,8 +172,8 @@ if __name__ == "__main__":
                     print('## TRAIN cost: ', np.round(cst, 3))
                     show_all(y, x, pred)
 
-            elif (epoch % 10 == 0 or epoch == nEpochs - 1) and \
-                    samp - nTrainSamples < 3:
+            elif (epoch % 10 == 0 and samp - nTrainSamples < 3) \
+                    or epoch == nEpochs - 1:
                 # Print some test images
                 pred = np.asarray(test_fn(x.T))[0]
                 print('## TEST')
