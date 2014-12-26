@@ -48,7 +48,16 @@ def build_model(input_sz, hidden_sz, output_sz):
 
 
 def recurrence_relation(y_sym, blank):
-
+    '''
+    A matrix that specifies allowed transistions in paths.
+    At any time, one could 
+    0) Stay at the same label (diagonal is identity)
+    1) Move to the next label (first upper diagonal is identity)
+    2) Skip to the next to next label if 
+        a) next label is blank and 
+        b) the next to next label is different from the current
+        (Second upper diagonal is product of conditons a & b)
+    '''
     def sec_diag_i(yt, ytp1, ytp2):
         return tt.neq(yt, ytp2) * tt.eq(ytp1, blank)
     
@@ -89,7 +98,6 @@ class RnnCTC():
             build_model(n_dims, n_hidden, n_classes + 1)
         self.cost = ctc_cost(self.predict, self.Y, n_classes)
 
-        # Differentiable
         self.updates = []
         for p in self.params:
             grad = tt.grad(self.cost, wrt=p)
