@@ -58,14 +58,10 @@ def recurrence_relation(y_sym, blank):
         b) the next to next label is different from the current
         (Second upper diagonal is product of conditons a & b)
     '''
-    def sec_diag_i(yt, ytp1, ytp2):
-        return tt.neq(yt, ytp2) * tt.eq(ytp1, blank)
-    
     y_extend = tt.concatenate((y_sym, [blank, blank]))
-    sec_diag, _ = theano.scan(sec_diag_i,
-                    sequences={'input':y_extend, 'taps':[0, 1, 2]})
-
+    sec_diag = tt.neq(y_extend[:-2], y_extend[2:]) * tt.eq(y_extend[1:-1], blank)
     y_sz = y_sym.shape[0]
+
     return tt.eye(y_sz) + \
            tt.eye(y_sz, k=1) + \
            tt.eye(y_sz, k=2) * sec_diag.dimshuffle((0, 'x'))
