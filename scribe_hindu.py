@@ -91,7 +91,7 @@ class NumberScribe():
             at_ht = np.random.randint(self.vbuffer + maxHt - ht + 1)
             ret_x[at_ht:at_ht+ht, ix:ix+wd] += numbers[char]
             ret_y += [char]
-            ix += wd + np.random.randint(self.hbuffer+1)+1
+            ix += wd + np.random.randint(self.hbuffer+1)
 
         ret_x += self.noise * np.random.normal(size=ret_x.shape,)
         ret_x = np.clip(ret_x, 0, 1)
