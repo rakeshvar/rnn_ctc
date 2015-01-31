@@ -10,7 +10,7 @@ def slab_print(slab):
         print('{:2d}¦'.format(ir), end='')
         for val in r:
             if   val < 0.0:  print('-', end='')
-            if   val < .15:  print(' ', end=''),
+            elif val < .15:  print(' ', end=''),
             elif val < .35:  print('░', end=''),
             elif val < .65:  print('▒', end=''),
             elif val < .85:  print('▓', end=''),
@@ -30,7 +30,15 @@ def prediction_printer(n_classes):
 
     def yprint(labels):
         for il, l in enumerate(labels):
-            if (l != n_classes) and (il==0 or l != labels[il-1]):
+            if (l != n_classes) and (il == 0 or l != labels[il-1]):
                     print(l, end=' ')
         print()
-    return yprint
+
+    def ylen(labels):
+        length = 0
+        for il, l in enumerate(labels):
+            if (l != n_classes) and (il == 0 or l != labels[il-1]):
+                length += 1
+        return length
+
+    return yprint, ylen

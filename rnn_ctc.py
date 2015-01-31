@@ -115,17 +115,27 @@ class RnnCTC():
 
 
 # ##########################################################################
-def show_all(shown_seq, shown_img, seen_probabilities, aux, aux_name):
-    maxes = np.argmax(seen_probabilities, 0)
+def show_all(shown_seq, shown_img,
+             seen_probabilities=None,
+             aux=None, aux_name=None):
     print('Shown : ', end='')
-    pred_print(shown_seq)
-    print('Seen  : ', end='')
-    pred_print(maxes)
-    print('Images (Shown & Seen) : ')
+    labels_print(shown_seq)
+
+    if seen_probabilities is not None:
+        print('Seen  : ', end='')
+        maxes = np.argmax(seen_probabilities, 0)
+        labels_print(maxes)
+
+    print('Image Shown:')
     slab_print(shown_img)
-    slab_print(seen_probabilities)
-    print(aux_name)
-    slab_print(aux)
+
+    if seen_probabilities is not None:
+        print('Firings:')
+        slab_print(seen_probabilities)
+
+    if aux is not None:
+        print(aux_name)
+        slab_print(aux)
 
 
 if __name__ == "__main__":
@@ -156,7 +166,7 @@ if __name__ == "__main__":
     nTrainSamples = nSamples * .75
     nEpochs = 100
 
-    pred_print = prediction_printer(nClasses)
+    labels_print, labels_len = prediction_printer(nClasses)
 
     data_x, data_y = [], []
     bad_data = False
@@ -167,9 +177,9 @@ if __name__ == "__main__":
             y1 += [char, nClasses]
         data_y.append(np.asarray(y1, dtype=np.int32))
         data_x.append(np.asarray(x, dtype=theano.config.floatX))
-        if len(y1) > (1+len(x[0]))//conv_sz:
+        if labels_len(y1) > (1+len(x[0]))//conv_sz:
             bad_data = True
-            show_all(y1, x, x[:2,::conv_sz].T)
+            show_all(y1, x, None, x[:,::conv_sz], "Squissed")
     if bad_data: 
         print('BAD DATA')
         #sys.exit()
