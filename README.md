@@ -65,9 +65,13 @@ Images (Shown & Seen) :
  6¦█████████░███░███░█░▒███████¦
 
 ```
+## References
+* Graves, Alex. Chapters 2, 3, 7 and 9 of **"Supervised Sequence Labelling with Recurrent Neural Networks."**
+..* ["Springer"](http://www.springer.com/engineering/computational+intelligence+and+complexity/book/978-3-642-24796-5)
+..* ["University Edition"](http://link.springer.com/book/10.1007%2F978-3-642-24797-2) via. Springer Link.
+..* ["Free Preprint"](http://www.cs.toronto.edu/~graves/preprint.pdf)
 
 ## Credits
-* Graves, Alex, et al. ["Connectionist temporal classification: labelling unsegmented sequence data with recurrent neural networks."](http://machinelearning.wustl.edu/mlpapers/paper_files/icml2006_GravesFGS06.pdf) ICML, 2006.
 * Theano implementation of CTC by [Shawn Tan](https://github.com/shawntan/rnn-experiment/)
 
 ## Dependencies
