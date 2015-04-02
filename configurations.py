@@ -1,5 +1,5 @@
 from lstm import LSTM
-from reccurent import RecurrentLayer
+from reccurent import RecurrentLayer, BiRecurrentLayer
 
 configs = (
     # Config 0
@@ -9,7 +9,7 @@ configs = (
     (RecurrentLayer, {"conv_sz": 3, "nunits": 9}),
 
     # Config 2
-    (RecurrentLayer, {"conv_sz": 1, "nunits": 5}),
+    (RecurrentLayer, {"conv_sz": 1, "nunits": 5,  "learn_init_state":False}),
 
     # Config 3
     (RecurrentLayer, {"conv_sz": 3, "nunits": 5}),
@@ -32,4 +32,7 @@ configs = (
 
     # Config 9
     (LSTM, {"nunits": 9, "learn_init_states":False}),
+
+    # Config 10
+    (BiRecurrentLayer, {"nunits": 5}),
 )
