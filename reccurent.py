@@ -30,7 +30,3 @@ class RecurrentLayer():
 
         self.params = [wio, woo, bo]
         self.nout = nunits
-
-    @classmethod
-    def __str__(cls):
-        return "RecurrentLayer"

@@ -28,24 +28,27 @@ class LSTM():
                  nin, nunits,
                  forget=False,
                  actvn_pre='tanh',
-                 actvn_post='linear'):
+                 actvn_post='linear',
+                 learn_init_states=True):
         """
         Init
         :param inpt: Lower layer's excitation.
         :param nin: Dimension of lower layer.
         :param nunits: Number of units.
-        :param forget: Want a seperate forget gate (or use 1-input).
+        :param forget: Want a seperate forget gate (or use 1-input)?
         :param actvn_pre: Activation applied to new candidate for cell value.
         :param actvn_post: Activation applied to cell value before output.
+        :param learn_init_states: Should the intial states be learnt?
         :return: Output
         """
         # TODO: Incell connections
-        # TODO: Initial states as parameters
 
         num_activations = 3 + forget
         w = stacked_wts(nin, nunits, num_activations)
         u = stacked_wts(nunits, nunits, num_activations)
-        b = share(np.zeros((num_activations * nunits)))
+        b = share(np.zeros(num_activations * nunits))
+        out0 = share(np.zeros(nunits))
+        cell0 = share(np.zeros(nunits))
 
         actvn_pre = activation_by_name(actvn_pre)
         actvn_post = activation_by_name(actvn_post)
@@ -64,20 +67,21 @@ class LSTM():
             out_gate = sigmoid(tmp[nunits:2*nunits])
             fgt_gate = sigmoid(tmp[2*nunits:3*nunits]) if forget else 1-inn_gate
 
-            candidate = actvn_pre(tmp[-nunits:])
-            cell_val = fgt_gate * cell_tm1 + inn_gate * candidate
+            cell_val = actvn_pre(tmp[-nunits:])
+            cell_val = fgt_gate * cell_tm1 + inn_gate * cell_val
             out = out_gate * actvn_post(cell_val)
 
-            return out, candidate
+            return out, cell_val
 
         inpt = tt.dot(inpt, w) + b
         # seqlen x nin * nin x 3*nout + 3 * nout  = seqlen x 3*nout
 
         rval, updates = th.scan(step,
                                 sequences=[inpt],
-                                outputs_info=[np.zeros(nunits),
-                                              np.zeros(nunits)],)
+                                outputs_info=[out0, cell0],)
 
         self.output = rval[0]
         self.params = [w, u, b]
+        if learn_init_states:
+            self.params += [out0, cell0]
         self.nout = nunits
