@@ -65,8 +65,8 @@ nTrainSamples = nSamples * .75
 nEpochs = 100
 labels_print, labels_len = prediction_printer(nClasses)
 
-print("\nConfig: {}"
-      "\nMidlayer: {} {}"
+print("\nConfig {}"
+      "\n\tMidlayer: {} {}"
       "\nInput Dim: {}"
       "\nNum Classes: {}"
       "\nNum Samples: {}"
@@ -74,7 +74,7 @@ print("\nConfig: {}"
                   nDims, nClasses, nSamples))
 
 ################################
-# Prepare and Inspect Data
+print("Preparing the Data")
 try:
     conv_sz = midlayerargs["conv_sz"]
 except KeyError:
@@ -98,10 +98,11 @@ for x, y in zip(data['x'], data['y']):
 
 
 ################################
-# Build Network and train
+print("Building the Network")
 
 ntwk = NeuralNet(nDims, nClasses, midlayer, midlayerargs)
 
+print("Training the Network")
 for epoch in range(nEpochs):
     print('Epoch : ', epoch)
     for samp in range(nSamples):

@@ -44,4 +44,6 @@ class BiRecurrentLayer():
 
         self.params = fwd.params + bwd.params
         self.nout = fwd.nout + bwd.nout
-        self.output = tt.concatenate([fwd.output, bwd.output], axis=1)
+        self.output = tt.concatenate([fwd.output,
+                                      bwd.output[::-1]],
+                                     axis=1)

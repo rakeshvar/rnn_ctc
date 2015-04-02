@@ -24,6 +24,7 @@ class LSTM():
     Reference: Supervised Sequence Learning with RNNs by Alex Graves
                 Chapter 4, Fig 4.2
     """
+
     def __init__(self, inpt,
                  nin, nunits,
                  forget=False,
@@ -64,8 +65,9 @@ class LSTM():
             tmp = tt.dot(out_tm1, u) + in_t
 
             inn_gate = sigmoid(tmp[:nunits])
-            out_gate = sigmoid(tmp[nunits:2*nunits])
-            fgt_gate = sigmoid(tmp[2*nunits:3*nunits]) if forget else 1-inn_gate
+            out_gate = sigmoid(tmp[nunits:2 * nunits])
+            fgt_gate = sigmoid(
+                tmp[2 * nunits:3 * nunits]) if forget else 1 - inn_gate
 
             cell_val = actvn_pre(tmp[-nunits:])
             cell_val = fgt_gate * cell_tm1 + inn_gate * cell_val
@@ -78,10 +80,37 @@ class LSTM():
 
         rval, updates = th.scan(step,
                                 sequences=[inpt],
-                                outputs_info=[out0, cell0],)
+                                outputs_info=[out0, cell0], )
 
         self.output = rval[0]
         self.params = [w, u, b]
         if learn_init_states:
             self.params += [out0, cell0]
         self.nout = nunits
+
+
+class BDLSTM():
+    """
+    Long Short Term Memory Layer.
+    Does not implement incell connections from cell value to the gates.
+    Reference: Supervised Sequence Learning with RNNs by Alex Graves
+                Chapter 4, Fig 4.2
+    """
+
+    def __init__(self, inpt,
+                 nin, nunits,
+                 forget=False,
+                 actvn_pre='tanh',
+                 actvn_post='linear',
+                 learn_init_states=True):
+
+        fwd = LSTM(inpt, nin, nunits, forget, actvn_pre, actvn_post,
+                   learn_init_states)
+        bwd = LSTM(inpt[::-1], nin, nunits, forget, actvn_pre, actvn_post,
+                   learn_init_states)
+
+        self.params = fwd.params + bwd.params
+        self.nout = fwd.nout + bwd.nout
+        self.output = tt.concatenate([fwd.output,
+                                      bwd.output[::-1]],
+                                     axis=1)
