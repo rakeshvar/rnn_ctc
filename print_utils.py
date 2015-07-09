@@ -19,20 +19,22 @@ def slab_print(slab):
         print('¦')
 
 
-def prediction_printer(n_classes):
+def prediction_printer(chars):
     """
     Returns a function that can print a predicted output of the CTC RNN
     It removes the blank characters (need to be set to n_classes),
     It also removes duplicates
-    :param n_classes: index of blank character
-    :return: the printing function
+    :param list chars: list of characters
+    :return: the printing functions
     """
+    n_classes = len(chars)
 
     def yprint(labels):
+        labels_out = []
         for il, l in enumerate(labels):
             if (l != n_classes) and (il == 0 or l != labels[il-1]):
-                    print(l, end=' ')
-        print()
+                labels_out.append(l)
+        print(labels_out, " ".join(chars[l] for l in labels_out))
 
     def ylen(labels):
         length = 0

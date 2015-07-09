@@ -1,22 +1,11 @@
 import theano.tensor as tt
-import theano as th
-import numpy as np
 
-
-def init_wts(*argv):
-    return 1 * (np.random.rand(*argv) - 0.5)
-
-
-def share(array, dtype=th.config.floatX, name=None):
-    return th.shared(value=np.asarray(array, dtype=dtype), name=name)
-
-
-############################### Activations ###############################
 
 class Activation:
     """
     Defines a bunch of activations as callable classes.
     Useful for printing and specifying activations as strings.
+    (via activation_by_name)
     """
     def __init__(self, fn, name):
         self.fn = fn
@@ -46,16 +35,15 @@ activation_list = [
 
 def activation_by_name(name):
     """
-    Get an activation function or callabe-class from its name
-    :param name: string
-    :return: Callable Activation
+    Get an activation function or callabe-class from its name.
+    Activation Names
+     sigmoid, softplus, softmax, linear, scaled_tanh, tanh,
+     relu, relu00, relu01, ..., relu99
+    :param string name:
+    :return: callable activation
     """
     for act in activation_list:
         if name == str(act):
             return act
     else:
         raise NotImplementedError("Unknown Activation Specified: " + name)
-
-#### Activation Names
-# sigmoid, softplus, softmax, linear, scaled_tanh, relu, tanh,
-# relu00, relu01, ..., relu99

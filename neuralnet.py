@@ -1,19 +1,19 @@
 import theano as th
 import theano.tensor as tt
-from ctc import SoftmaxLayer, CTCLayer
-
-# theano.config.optimizer = 'fast_compile'
-# theano.config.exception_verbosity='high'
+from ctc import CTCLayer
+from outlayers import SoftmaxLayer
 
 
 class NeuralNet():
-    def __init__(self, n_dims, n_classes, midlayer, midlayer_args):
+    def __init__(self, n_dims, n_classes,
+                 midlayer, midlayer_args,
+                 logspace=True):
         image = tt.matrix('image')
         labels = tt.ivector('labels')
 
         layer1 = midlayer(image.T, n_dims, **midlayer_args)
         layer2 = SoftmaxLayer(layer1.output, layer1.nout, n_classes + 1)
-        layer3 = CTCLayer(layer2.output, labels, n_classes)
+        layer3 = CTCLayer(layer2.output, labels, n_classes, logspace)
 
         updates = []
         for lyr in (layer1, layer2, layer3):

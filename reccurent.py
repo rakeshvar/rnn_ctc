@@ -1,7 +1,6 @@
-import numpy as np
 import theano
 import theano.tensor as tt
-from activations import share, init_wts
+from weights import init_wts, share
 
 
 class RecurrentLayer():

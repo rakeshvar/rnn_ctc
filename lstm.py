@@ -2,19 +2,9 @@ import theano.tensor as tt
 import theano as th
 from theano.tensor.nnet import sigmoid
 import numpy as np
-from activations import share, activation_by_name
 
-
-def orthonormal_wts(n, m):
-    nm = max(n, m)
-    return np.linalg.svd(np.random.randn(nm, nm))[0].astype(
-        th.config.floatX)[:n, :m]
-
-
-def stacked_wts(n, m, copies, name=None):
-    return share(
-        np.hstack([orthonormal_wts(n, m) for _ in range(copies)]),
-        name=name)
+from activations import activation_by_name
+from weights import stacked_ortho_wts, share
 
 
 class LSTM():
@@ -24,7 +14,6 @@ class LSTM():
     Reference: Supervised Sequence Learning with RNNs by Alex Graves
                 Chapter 4, Fig 4.2
     """
-
     def __init__(self, inpt,
                  nin, nunits,
                  forget=False,
@@ -45,8 +34,8 @@ class LSTM():
         # TODO: Incell connections
 
         num_activations = 3 + forget
-        w = stacked_wts(nin, nunits, num_activations)
-        u = stacked_wts(nunits, nunits, num_activations)
+        w = stacked_ortho_wts(nin, nunits, num_activations)
+        u = stacked_ortho_wts(nunits, nunits, num_activations)
         b = share(np.zeros(num_activations * nunits))
         out0 = share(np.zeros(nunits))
         cell0 = share(np.zeros(nunits))
@@ -91,19 +80,17 @@ class LSTM():
 
 class BDLSTM():
     """
-    Long Short Term Memory Layer.
-    Does not implement incell connections from cell value to the gates.
-    Reference: Supervised Sequence Learning with RNNs by Alex Graves
-                Chapter 4, Fig 4.2
+    Bidirectional Long Short Term Memory Layer.
     """
-
     def __init__(self, inpt,
                  nin, nunits,
                  forget=False,
                  actvn_pre='tanh',
                  actvn_post='linear',
                  learn_init_states=True):
-
+        """
+        See `LSTM`.
+        """
         fwd = LSTM(inpt, nin, nunits, forget, actvn_pre, actvn_post,
                    learn_init_states)
         bwd = LSTM(inpt[::-1], nin, nunits, forget, actvn_pre, actvn_post,

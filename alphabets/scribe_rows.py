@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 '''
-This file is used to 'scribe' a random piece of 'text' on to a 'slab'.
+This file is used to 'alphabets' a random piece of 'text' on to a 'slab'.
   'text' - A sequence based on an alphabet [0, 1, 2 ...n_chars)
   'slab' - An numpy matrix
             Has as many rows as the size of the alphabet i.e. n_chars
@@ -132,5 +132,6 @@ if __name__ == "__main__":
           'Complex Scribe: {}\n'.format(
         out_file_name, nChars, avg_seq_len, variable_len, complx, ))
 
+    chars = [str(x) for x in range(nChars)]
     with open(out_file_name, 'wb') as f:
-        pickle.dump({'x': xs, 'y': ys, 'nChars': nChars}, f, -1)
+        pickle.dump({'x': xs, 'y': ys, 'chars': chars}, f, -1)

@@ -7,6 +7,9 @@ from configurations import configs
 from neuralnet import NeuralNet
 from print_utils import slab_print, prediction_printer
 
+# th.config.optimizer = 'fast_compile'
+# th.config.exception_verbosity='high'
+
 
 def show_all(shown_seq, shown_img,
              seen_probabilities=None,
@@ -32,7 +35,7 @@ def show_all(shown_seq, shown_img,
     slab_print(shown_img)
 
     if seen_probabilities is not None:
-        print('Firings:')
+        print('SoftMax Firings:')
         slab_print(seen_probabilities)
 
     if aux_img is not None:
@@ -41,10 +44,11 @@ def show_all(shown_seq, shown_img,
 
 # ################################## Main Script ###########################
 config_num = 0
+log_space = True
 
 if len(sys.argv) < 2:
-    print('Usage\n{} <data_file.pkl> configuration#={}'
-          ''.format(sys.argv[0], config_num))
+    print('Usage\n{} <data_file.pkl> [configuration#={}] [use_log={}]'
+          ''.format(sys.argv[0], config_num, log_space))
     sys.exit(1)
 
 with open(sys.argv[1], "rb") as pkl_file:
@@ -53,25 +57,30 @@ with open(sys.argv[1], "rb") as pkl_file:
 if len(sys.argv) > 2:
     config_num = int(sys.argv[2])
 
+if len(sys.argv) > 3:
+    log_space = sys.argv[3][0] in "TtYy1"
 
 ################################
 # Network Parameters
 
 midlayer, midlayerargs = configs[config_num]
-nClasses = data['nChars']
+chars = data['chars']
+nClasses = len(chars)
 nDims = len(data['x'][0])
 nSamples = len(data['x'])
 nTrainSamples = nSamples * .75
 nEpochs = 100
-labels_print, labels_len = prediction_printer(nClasses)
+labels_print, labels_len = prediction_printer(chars)
 
-print("\nConfig {}"
-      "\n\tMidlayer: {} {}"
+print("\nConfig: {}"
+      "\n   Midlayer: {} {}"
       "\nInput Dim: {}"
       "\nNum Classes: {}"
       "\nNum Samples: {}"
-      "\n".format(config_num, midlayer, midlayerargs,
-                  nDims, nClasses, nSamples))
+      "\nFloatX: {}"
+      "\nUsing log space: {}"
+      "\n".format(config_num, midlayer, midlayerargs, nDims, nClasses,
+                  nSamples, th.config.floatX, log_space))
 
 ################################
 print("Preparing the Data")
@@ -100,7 +109,7 @@ for x, y in zip(data['x'], data['y']):
 ################################
 print("Building the Network")
 
-ntwk = NeuralNet(nDims, nClasses, midlayer, midlayerargs)
+ntwk = NeuralNet(nDims, nClasses, midlayer, midlayerargs, log_space)
 
 print("Training the Network")
 for epoch in range(nEpochs):
@@ -108,15 +117,18 @@ for epoch in range(nEpochs):
     for samp in range(nSamples):
         x = data_x[samp]
         y = data_y[samp]
+        # if not samp % 500:            print(samp)
 
         if samp < nTrainSamples:
+            if log_space and len(y) < 2:
+                continue
+
             cst, pred, aux = ntwk.trainer(x, y)
             if (epoch % 10 == 0 and samp < 3) or np.isinf(cst):
-                print('## TRAIN cost: ', np.round(cst, 3))
-                show_all(y, x, pred, aux > 0, 'Forward probabilities:')
+                print('\n## TRAIN cost: ', np.round(cst, 3))
+                show_all(y, x, pred, aux > 1e-20, 'Forward probabilities:')
             if np.isinf(cst):
-                print(
-                    'Exiting on account of Inf Cost on the following data...')
+                print('Exiting on account of Inf Cost...')
                 sys.exit()
 
         elif (epoch % 10 == 0 and samp - nTrainSamples < 3) \
@@ -124,5 +136,5 @@ for epoch in range(nEpochs):
             # Print some test images
             pred, aux = ntwk.tester(x)
             aux = (aux + 1) / 2.0
-            print('## TEST')
-            show_all(y, x, pred, aux, 'Convolution:')
+            print('\n## TEST')
+            show_all(y, x, pred, aux, 'Hidden Layer:')

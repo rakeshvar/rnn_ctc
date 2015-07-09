@@ -1,28 +1,39 @@
 # rnn_ctc
 
-Recurrent Neural Network with Connectionist Temporal Classifical implemented in Theano. Includes a Toy training example.
+Recurrent Neural Network with Connectionist Temporal Classifical implemented 
+in Theano. Includes a Toy training example.
 
 ## Usage
 
-1) First generate some data using one of the scribes (a or b)
+### Generate Data
+First generate some data using one of the scribes (a, b or c)
 
-a) scribe_rows scribes i-th digit along the i-th row as an i+2 long bar  
+a) Hindu numerals   
 ```sh
-python3 scribe_rows.py data.pkl
+python3 scribe.py data.pkl hindu
 # Run with no arguments to see full usage
 ```
 
-b) scribe_hindu scribes i-th digit as a Hindu-Arabic numeral.   
+b) ASCII characters.   
 ```sh
-python3 scribe_hindu.py data.pkl
+python3 scribe.py data.pkl ascii
 # Run with no arguments to see full usage
 ```
-This will output data.pkl
 
-2) Run the actual Recurrent Neural Net with Connectionist Temporal Classification cost function as:
+c) scribe_rows scribes i-th digit along the i-th row as an i+2 long bar  
 ```sh
-python3 ctc.py data.pkl [configuration_num]
-# See configurations.py for various configurations.
+python3 alphabets/scribe_rows.py data.pkl
+# Run with no arguments to see full usage
+```
+
+Now you have the data.pkl file.
+
+### Train  Network
+Run the actual Recurrent Neural Net with Connectionist Temporal Classification 
+cost function as:
+```sh
+python3 train.py data.pkl [configuration_num]
+# Run with no arguments for full usage.
 ```
 
 ## Sample Output
@@ -43,7 +54,7 @@ Images (Shown & Seen) :
  3¦      █                   ¦  
  4¦████                 ▒████¦  
 
-# Using data from scribe_hindu.py
+# Using data from scribe.py hindu
 Shown : 0 2 2 5 
 Seen  : 0 2 2 5 
 Images (Shown & Seen) : 
@@ -73,13 +84,13 @@ Images (Shown & Seen) :
  * Free [Preprint](http://www.cs.toronto.edu/~graves/preprint.pdf)
 
 ## Credits
-* Theano implementation of CTC by [Shawn Tan](https://github.com/shawntan/rnn-experiment/)
+* Theano implementation of CTC by [Shawn Tan](https://github.com/shawntan/theano-ctc/)
 
 ## Dependencies
 * Numpy
 * Theano
 
-Can easily port to python2 by adding the following line where necessary:
+Can easily port to python2 by adding lines like these where necessary:
 ``` python
 from __future__ import print_function
 ```
