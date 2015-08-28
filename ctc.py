@@ -6,10 +6,10 @@ import theano.tensor as tt
 eps, epsinv = 1e-20, 1e20
 
 def safe_log(x):
-    return tt.log(tt.maximum(x, eps))
+    return tt.log(tt.maximum(x, eps).astype(theano.config.floatX))
 
 def safe_exp(x):
-    return tt.exp(tt.minimum(x, epsinv))
+    return tt.exp(tt.minimum(x, epsinv).astype(theano.config.floatX))
 
 def logadd_simple(x, y):
     return x + safe_log(1 + safe_exp(y - x))

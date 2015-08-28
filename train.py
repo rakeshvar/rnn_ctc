@@ -47,8 +47,11 @@ config_num = 0
 log_space = True
 
 if len(sys.argv) < 2:
-    print('Usage\n{} <data_file.pkl> [configuration#={}] [use_log={}]'
-          ''.format(sys.argv[0], config_num, log_space))
+    print('Usage'
+          '\n\t{} <data_file.pkl> [configuration#={}] [use_log={}]'
+          '\n\nConfigurations:'.format(sys.argv[0], config_num, log_space))
+    for i, config in enumerate(configs):
+        print("{:2d} {} {}".format(i, config[0].__name__, config[1]))
     sys.exit(1)
 
 with open(sys.argv[1], "rb") as pkl_file:
