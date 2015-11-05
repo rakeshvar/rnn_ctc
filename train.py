@@ -73,7 +73,7 @@ chars = data['chars']
 nClasses = len(chars)
 nDims = len(data['x'][0])
 nSamples = len(data['x'])
-nTrainSamples = nSamples * .75
+nTrainSamples = int(nSamples * .8)
 nEpochs = 100
 labels_print, labels_len = prediction_printer(chars)
 
