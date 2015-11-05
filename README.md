@@ -7,17 +7,19 @@ in Theano. Includes a Toy training example.
 
 ### Generate Data
 First generate some data using one of the scribes (a, b or c)
+```sh
+# Run with '-h' to see full functionality of gen_data.py
+python3 gen_data.py -h
+```
 
 a) Hindu numerals   
 ```sh
-python3 scribe.py data.pkl hindu
-# Run with no arguments to see full usage
+python3 gen_data.py data.pkl -a hindu
 ```
 
 b) ASCII characters.   
 ```sh
-python3 scribe.py data.pkl ascii
-# Run with no arguments to see full usage
+python3 gen_data.py data.pkl -a ascii
 ```
 
 c) scribe_rows scribes i-th digit along the i-th row as an i+2 long bar  
