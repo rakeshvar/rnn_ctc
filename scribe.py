@@ -17,9 +17,22 @@ class Scribe():
 
         self.nDims = alphabet.maxHt + vbuffer
 
+        self.shuffled_char_indices = np.arange(self.alphabet.n)
+        self.shuffled_char_pointer = 0
+
+
     def get_sample_of_random_len(self):
         length = int(self.avg_len * np.random.uniform(.75, 1.25))
         return self.get_sample_of_len(length)
+
+    def get_next_char(self):
+        if self.shuffled_char_pointer == len(self.shuffled_char_indices):
+            np.random.shuffle(self.shuffled_char_indices)
+            self.shuffled_char_pointer = 0
+
+        self.shuffled_char_pointer += 1
+        return self.alphabet.get_char(self.shuffled_char_indices[
+            self.shuffled_char_pointer-1])
 
     def get_sample_of_len(self, length):
         image = np.zeros((self.nDims, length), dtype=float)
@@ -27,7 +40,7 @@ class Scribe():
 
         at_wd = np.random.exponential(self.hbuffer) + self.hbuffer
         while at_wd < length - self.hbuffer - self.alphabet.maxWd:
-            index, char, bitmap = self.alphabet.random_char()
+            index, char, bitmap = self.get_next_char()
             ht, wd = bitmap.shape
             at_ht = irand(self.vbuffer + self.alphabet.maxHt - ht + 1)
             image[at_ht:at_ht+ht, at_wd:at_wd+wd] += bitmap
@@ -40,7 +53,7 @@ class Scribe():
 
     def get_sample_of_n_chars(self, n):
         gaps = irand(self.hbuffer, size=n+1)
-        labels_bitmaps = [self.alphabet.random_char() for _ in range(n)]
+        labels_bitmaps = [self.get_next_char() for _ in range(n)]
         labels, _, bitmaps = zip(*labels_bitmaps)
         length = sum(gaps) + sum(b.shape[1] for b in bitmaps)
         image = np.zeros((self.nDims, length), dtype=float)

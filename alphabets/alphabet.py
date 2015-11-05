@@ -9,8 +9,10 @@ class Alphabet():
         self.maxHt = max([bitmap.shape[0] for bitmap in bitmaps])
         self.maxWd = max([bitmap.shape[1] for bitmap in bitmaps])
 
-    def random_char(self):
-        index = np.random.choice(self.n)
+    def get_char(self, index=None):
+        if index is None:
+            index = np.random.choice(self.n)
+
         bitmap = self.bitmaps[index]
         char = self.chars[index]
         return index, char, bitmap
