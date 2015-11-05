@@ -3,10 +3,10 @@ from reccurent import RecurrentLayer, BiRecurrentLayer
 
 configs = (
     # Configurations
-    #
     # USAGE: train.py data.pkl config#
+    # Add more configurations here. Or edit the existing ones.
     #
-    # Line number - 10
+    # Serial number = Line number - 10
     (RecurrentLayer, {"nunits": 9}),
     (RecurrentLayer, {"nunits": 9, "conv_sz": 3}),
     (RecurrentLayer, {"nunits": 5, "learn_init_state":False}),

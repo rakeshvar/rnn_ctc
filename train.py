@@ -52,6 +52,8 @@ if len(sys.argv) < 2:
           '\n\nConfigurations:'.format(sys.argv[0], config_num, log_space))
     for i, config in enumerate(configs):
         print("{:2d} {} {}".format(i, config[0].__name__, config[1]))
+    print("Edit configurations.py to add new or change existing "
+          "configurations.")
     sys.exit(1)
 
 with open(sys.argv[1], "rb") as pkl_file:
