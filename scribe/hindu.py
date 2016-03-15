@@ -16,7 +16,7 @@
 
 """
 import numpy as np
-from alphabets.alphabet import Alphabet
+from .alphabet import Alphabet
 
 numbers_ = [
     [

@@ -1,0 +1,45 @@
+{
+'nnet_args': {
+   # 'mid_layer':'RecurrentLayer',
+   # 'mid_layer_args': {'nunits': 9},
+
+   # 'mid_layer':'RecurrentLayer',
+   # 'mid_layer_args': {'nunits': 9, 'conv_sz': 3},
+
+   # 'mid_layer':'RecurrentLayer',
+   # 'mid_layer_args': {'nunits': 5, 'learn_init_state':False},
+
+   'mid_layer':'BiRecurrentLayer',
+   'mid_layer_args': {'nunits': 5, 'learn_init_state':False},
+
+   # 'mid_layer':'BiRecurrentLayer',
+   # 'mid_layer_args': {'nunits': 3, 'conv_sz': 3},
+
+   # 'mid_layer':'LSTM',
+   # 'mid_layer_args': {'nunits': 9},
+
+   # 'mid_layer':'LSTM',
+   # 'mid_layer_args': {'nunits': 9, 'forget': True},
+
+   # 'mid_layer':'LSTM',
+   # 'mid_layer_args': {'nunits': 9, 'actvn_pre': 'relu10'},
+
+   # 'mid_layer':'LSTM',
+   # 'mid_layer_args': {'nunits': 9, 'forget': True, 'actvn_post': 'relu50', 'actvn_pre': 'relu10'},
+
+   # 'mid_layer':'LSTM',
+   # 'mid_layer_args': {'nunits': 9, 'learn_init_states': False},
+
+   # 'mid_layer':'BDLSTM',
+   # 'mid_layer_args': {'nunits': 9},
+
+   # 'mid_layer':'BDLSTM',
+   # 'mid_layer_args': {'nunits': 3},
+
+   # 'mid_layer':'BDLSTM',
+   # 'mid_layer_args': {'nunits': 5},
+
+   # 'mid_layer':'RecurrentLayer',
+   # 'mid_layer_args': {'nunits': 90},
+    },
+}

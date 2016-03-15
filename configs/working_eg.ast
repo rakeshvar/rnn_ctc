@@ -1,0 +1,34 @@
+{
+# Training
+'num_epochs': 100,
+'num_samples': 1000,     # Online: Number of samples per epoch
+'train_on_fraction': .8, # Offline use only
+
+# Online training and Offline data generation
+'scribe_args': {
+    'alphabet': 'hindu_alphabet',
+    'noise': .05,
+    'vbuffer': 3,
+    'hbuffer': 5,
+    'avg_seq_len': 0,
+    'varying_len': False,
+    'nchars_per_sample': 6,
+    },
+
+# Online and offline training
+'nnet_args': {
+    'use_log_space': True,
+
+    'mid_layer':'BiRecurrentLayer',
+    'mid_layer_args': {'nunits': 5, 'learn_init_state':False},
+
+    'optimizer': 'sgd',
+    'optimizer_args': {},
+
+    'learning_rate_args': {
+        'initial_rate': .001,
+        'anneal': 'constant',
+        'epochs_to_half': 1,
+        },
+    },
+}

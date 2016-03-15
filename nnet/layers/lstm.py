@@ -3,8 +3,8 @@ import theano as th
 from theano.tensor.nnet import sigmoid
 import numpy as np
 
-from activations import activation_by_name
-from weights import stacked_ortho_wts, share
+from .activations import activation_by_name
+from .weights import stacked_ortho_wts, share
 
 
 class LSTM():

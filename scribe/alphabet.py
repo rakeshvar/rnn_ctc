@@ -18,8 +18,8 @@ class Alphabet():
         return index, char, bitmap
 
     def __str__(self):
-        ret = ""
+        ret = ''
         for c, b in zip(self.chars, self.bitmaps):
-            slab = "\n".join(("".join("# "[p] for p in r) for r in b))
-            ret += "\n{}:\n{}".format(c, slab)
+            slab = '\n'.join((''.join('# '[p] for p in r) for r in b))
+            ret += '\n{}:\n{}'.format(c, slab)
         return ret

@@ -1,0 +1,42 @@
+{
+'nnet_args': {
+    'optimizer': 'sgd',
+    'optimizer_args': {},
+
+   # 'optimizer':'sgd',
+   # 'optimizer':'adagrad',
+   # 'optimizer_args': {},
+
+   # 'optimizer':'momentum',
+   # 'optimizer':'nesterov_momentum',
+   # 'optimizer_args': {'momentum': 0.95},
+
+   # 'optimizer':'rmsprop',
+   # 'optimizer':'adadelta',
+   # 'optimizer_args': {'rho':0.9},
+
+   # 'optimizer':'adam',
+   # 'optimizer':'adamax',
+   # 'optimizer_args': {'beta1':0.9, 'beta2':0.999,},
+
+    'learning_rate_args': {
+        'initial_rate': .001,
+        'anneal': 'constant',
+        'epochs_to_half': 1,
+        },
+
+    # 'learning_rate_args': {
+    #     'initial_rate': .1,
+    #     'anneal': 'inverse',
+    #     'epochs_to_half': 1,
+    #     },
+
+    # 'learning_rate_args': {
+    #     'initial_rate': .1,
+    #     'anneal': 'inverse_sqrt',
+    #     'epochs_to_half': 1,
+    #     },
+
+    },
+}
+

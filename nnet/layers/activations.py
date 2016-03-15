@@ -46,4 +46,4 @@ def activation_by_name(name):
         if name == str(act):
             return act
     else:
-        raise NotImplementedError("Unknown Activation Specified: " + name)
+        raise NotImplementedError('Unknown Activation Specified: ' + name)

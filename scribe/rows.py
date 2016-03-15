@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 '''
-This file is used to 'alphabets' a random piece of 'text' on to a 'slab'.
+This file is used to 'scribe' a random piece of 'text' on to a 'slab'.
   'text' - A sequence based on an alphabet [0, 1, 2 ...n_chars)
   'slab' - An numpy matrix
             Has as many rows as the size of the alphabet i.e. n_chars
@@ -83,7 +83,7 @@ class RowScribe():
 if __name__ == "__main__":
     import pickle
     import sys
-    from print_utils import slab_print
+    from utils import slab_print
 
     if len(sys.argv) < 2:
         print('Usage \n'

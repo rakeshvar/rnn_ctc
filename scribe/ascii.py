@@ -4,7 +4,7 @@
 
 *********************************************************************"""
 import numpy as np
-from alphabets.alphabet import Alphabet
+from .alphabet import Alphabet
 
 # the values in this array are a 8x8 bitmap font for ascii characters
 bitmaps_hex = [

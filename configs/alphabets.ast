@@ -1,0 +1,29 @@
+{
+'scribe_args': {
+    'alphabet': 'hindu_alphabet',
+    # 'alphabet': 'ascii_alphabet',
+
+    'noise': .05,
+    # 'noise': .1,
+
+    'vbuffer': 3,
+    'hbuffer': 5,
+
+    # 'avg_seq_len': 0,
+    # 'varying_len': False,
+    # 'nchars_per_sample': 3,
+
+    # 'avg_seq_len': 0,
+    # 'varying_len': False,
+    # 'nchars_per_sample': 5,
+
+    'avg_seq_len': 60,
+    'varying_len': True,
+    'nchars_per_sample': None,
+
+    # 'avg_seq_len': 50,
+    # 'varying_len': False,
+    # 'nchars_per_sample': None,
+
+    },
+}
