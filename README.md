@@ -21,7 +21,7 @@ the **online** way.
 You will need to specify a lot of parameters. Here is a overview. The file `configs/default.ast` 
 has all the parameters specified (as a python dictionary), so compare that with these instructions.
 
-* Data Generation (Refer `configs/alphabets.ast`)
+* Data Generation (cf. `configs/alphabets.ast`)
     * Scribe (The class that generates the samples)
         * `alphabet`: 'ascii_alphabet' (0-9a-zA-Z etc.) or 'hindu_alphabet' (0-9 hindu numerals)
         * `noise`: Amount of noise in the image
@@ -32,7 +32,7 @@ has all the parameters specified (as a python dictionary), so compare that with 
         over-rides `avg_seq_len`.
     * `num_samples`
 
-* Training (c.f. `configs/default.ast`)
+* Training (cf. `configs/default.ast`)
     * `num_epochs`
         * Offline case: Goes over the same data `num_epochs` times.
         * Online case: Each epoch has different data, resulting in generating a total of 
@@ -40,7 +40,7 @@ has all the parameters specified (as a python dictionary), so compare that with 
     * `train_on_fraction`
         * Offline case: Fraction of samples that are used as training data
         
-* Neural Network (c.f. `configs/midlayer.ast` and `configs/optimizers.ast`)
+* Neural Network (cf. `configs/midlayer.ast` and `configs/optimizers.ast`)
     * `use_log_space`: Perform calculations via the logarithms of probabilities.
     * `mid_layer`: The middle layer to be used. See the `nnet/layers` module for all the options you have.
     * `mid_layer_args`: The arguments needed for the middle layer. Depends on the `mid_layer`. 
