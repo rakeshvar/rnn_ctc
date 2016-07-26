@@ -1,7 +1,10 @@
 import pickle
 import sys
+from time import clock
+
 import numpy as np
 import theano as th
+import theano.tensor as tt
 
 from configurations import configs
 from neuralnet import NeuralNet
@@ -9,6 +12,7 @@ from print_utils import slab_print, prediction_printer
 
 # th.config.optimizer = 'fast_compile'
 # th.config.exception_verbosity='high'
+th.config.profile = True
 
 
 def show_all(shown_seq, shown_img,
@@ -69,12 +73,14 @@ if len(sys.argv) > 3:
 # Network Parameters
 
 midlayer, midlayerargs = configs[config_num]
-chars = data['chars']
+data_x, data_y, chars = data['x'], data['y'], data['chars']
+del data
+
 nClasses = len(chars)
-nDims = len(data['x'][0])
-nSamples = len(data['x'])
+nDims = len(data_x[0])
+nSamples = len(data_x)
 nTrainSamples = int(nSamples * .8)
-nEpochs = 100
+nEpochs = 10
 labels_print, labels_len = prediction_printer(chars)
 
 print("\nConfig: {}"
@@ -94,31 +100,50 @@ try:
 except KeyError:
     conv_sz = 1
 
-data_x, data_y = [], []
-bad_data = False
-
-for x, y in zip(data['x'], data['y']):
+for i in range(nSamples):
     # Insert blanks at alternate locations in the labelling (blank is nClasses)
     y1 = [nClasses]
-    for char in y:
+    for char in data_y[i]:
         y1 += [char, nClasses]
 
-    data_y.append(np.asarray(y1, dtype=np.int32))
-    data_x.append(np.asarray(x, dtype=th.config.floatX))
+    data_y[i] = np.asarray(y1, dtype=np.int32)
+    data_x[i] = data_x[i].astype(th.config.floatX)
 
-    if labels_len(y1) > (1 + len(x[0])) // conv_sz:
+    # Check to see if
+    if labels_len(y1) > (1 + data_x[i].shape[1]) // conv_sz:
         bad_data = True
-        show_all(y1, x, None, x[:, ::conv_sz], "Squissed")
+        show_all(y1, data_x[i], None, data_x[i][:, ::conv_sz], "Squissed")
 
+
+def merge(d):
+    indices = np.cumsum([0] + list((dd.shape[-1] for dd in d))).astype(
+        'float32')
+    merged = np.concatenate(d, axis=-1).astype('float32')
+    print(merged.shape)
+    return th.shared(merged, borrow=False), tt.cast(th.shared(indices), 'int32')
+
+xs, x_indices = merge(data_x)
+ys, y_indices = merge(data_y)
+ys = tt.cast(ys, 'int32')
+for s in xs, x_indices, ys, y_indices:
+    print(s, type(s), )#s.get_value().shape)
 
 ################################
 print("Building the Network")
 
-ntwk = NeuralNet(nDims, nClasses, midlayer, midlayerargs, log_space)
+ntwk = NeuralNet(nDims, nClasses, midlayer, midlayerargs,
+                 xs, x_indices, ys, y_indices,
+                 init_learn_rate=.1,
+                 logspace=log_space)
 
 print("Training the Network")
+start = clock()
+curr = clock()
 for epoch in range(nEpochs):
-    print('Epoch : ', epoch)
+    print('Epoch : {} Time: {:.2f}'.format(epoch, clock()-curr))
+    curr = clock()
+    ntwk.update_learning_rate(epoch)
+
     for samp in range(nSamples):
         x = data_x[samp]
         y = data_y[samp]
@@ -128,18 +153,25 @@ for epoch in range(nEpochs):
             if log_space and len(y) < 2:
                 continue
 
-            cst, pred, aux = ntwk.trainer(x, y)
-            if (epoch % 10 == 0 and samp < 3) or np.isinf(cst):
-                print('\n## TRAIN cost: ', np.round(cst, 3))
+            if epoch % 10 == 0 and samp < 3:
+                cost, pred, aux = ntwk.trainer_dbg(samp)
+                print('\n## TRAIN cost: ', np.round(cost, 3))
                 show_all(y, x, pred, aux > 1e-20, 'Forward probabilities:')
-            if np.isinf(cst):
+            else:
+                cost = ntwk.trainer(samp)
+
+            if np.isinf(cost) or np.isnan(cost):
                 print('Exiting on account of Inf Cost...')
                 sys.exit()
 
         elif (epoch % 10 == 0 and samp - nTrainSamples < 3) \
                 or epoch == nEpochs - 1:
             # Print some test images
-            pred, aux = ntwk.tester(x)
+            pred, aux = ntwk.tester_dbg(samp)
             aux = (aux + 1) / 2.0
             print('\n## TEST')
             show_all(y, x, pred, aux, 'Hidden Layer:')
+
+end = clock()
+mins, secs = int(end-start)//60, (end-start)%60
+print("Time taken for {} epochs is : {}m {:.2f}s".format(nEpochs, mins, secs))
